@@ -7,17 +7,19 @@ pub enum Msg {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct Props {
-    pub deadline_secs: i64,
+    pub deadline_timestamp: i64,
+    pub title: &'static str,
+    pub message_after_deadline: &'static str,
 }
 
 pub struct Countdown {
-    deadline: i64,
+    props: Props,
     _standalone: Interval,
 }
 
 impl Countdown {
     fn remaining(&self) -> i64 {
-        self.deadline - (js_sys::Date::now() as i64 / 1000)
+        self.props.deadline_timestamp - (js_sys::Date::now() as i64 / 1000)
     }
 }
 
@@ -26,15 +28,13 @@ impl Component for Countdown {
     type Properties = Props;
 
     fn create(ctx: &Context<Self>) -> Self {
-        let deadline = ctx.props().deadline_secs;
-
         let clock_handle = {
             let link = ctx.link().clone();
             Interval::new(1000, move || link.send_message(Msg::UpdateTime))
         };
 
         Self {
-            deadline,
+            props: ctx.props().clone(),
             _standalone: clock_handle,
         }
     }
@@ -74,7 +74,7 @@ impl Component for Countdown {
                         <div class="confetti-piece"></div>
                     </div>
                     <div class="countdown">
-                        <h1>{"Lenka priletela!"}</h1>
+                        <h1>{self.props.message_after_deadline}</h1>
                     </div>
                 </>
             };
@@ -87,7 +87,7 @@ impl Component for Countdown {
 
         html! {
             <div class="countdown">
-                <h2>{"Lenka priletí za"}</h2>
+                <h2>{self.props.title}</h2>
                 <h1>
                     { format!("{days:02}") }<small>{"d "}</small>
                     { format!("{hours:02}") }<small>{"h "}</small>

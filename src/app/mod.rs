@@ -13,7 +13,7 @@ pub fn app() -> Html {
 
     html! {
         <main>
-            <Countdown deadline_secs={deadline} />
+            <Countdown title={"Lenka priletí za"} message_after_deadline={"Lenka priletela!"} deadline_timestamp={deadline} />
         </main>
     }
 }

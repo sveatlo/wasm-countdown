@@ -1,0 +1,121 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.countdown {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  --h: 100vh;
+  height: var(--h);
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+
+  h2 {
+    font-size: calc((var(--h) / 12));
+    margin-bottom: 0;
+  }
+  h1 {
+    font-size: calc((var(--h) / 7));
+    margin-top: 0;
+
+    small {
+      font-weight: 100;
+    }
+  }
+}
+
+// darkmode
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #181a1b;
+    color: #e8e6e3;
+  }
+}
+
+// confetti
+
+$yellow: #ffd300;
+$blue: #17d3ff;
+$pink: #ff4e91;
+
+$duration: 3500;
+$height: 100vh;
+
+@function randomNum($min, $max) {
+  $rand: random();
+  $randomNum: $min + floor($rand * (($max - $min) + 1));
+
+  @return $randomNum;
+}
+
+.confetti {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: $height;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 16px;
+  background: $yellow;
+  top: 0;
+  opacity: 0;
+
+  @for $i from 1 through 20 {
+    &:nth-child(#{$i}) {
+      left: $i * 7%;
+      transform: rotate(#{randomNum(-80, 80)}deg);
+      animation: makeItRain $duration * 1ms infinite ease-out;
+      animation-delay: #{randomNum(0, $duration * 0.5)}ms;
+      animation-duration: #{randomNum($duration * 0.7, $duration * 1.2)}ms;
+    }
+  }
+
+  &:nth-child(odd) {
+    background: $blue;
+  }
+
+  &:nth-child(even) {
+    z-index: 1;
+  }
+
+  &:nth-child(4n) {
+    width: 5px;
+    height: 12px;
+    animation-duration: $duration * 2ms;
+  }
+
+  &:nth-child(3n) {
+    width: 3px;
+    height: 10px;
+    animation-duration: $duration * 2.5ms;
+    animation-delay: $duration * 1ms;
+  }
+
+  &:nth-child(4n-7) {
+    background: $pink;
+  }
+}
+
+@keyframes makeItRain {
+  from {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY($height);
+  }
+}
